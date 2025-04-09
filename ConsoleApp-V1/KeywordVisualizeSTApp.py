@@ -19,39 +19,42 @@ with st.form("my_form"):
 
     # 검색 버튼을 눌렀을 때
     if submitted:
-        st.write("keyword", keyword, "checkbox", checkbox_CSV)
-        start = 1
-        display = 10
-        resultJSON = NNC.searchNaverNews(keyword, start, display)
-        resultAll = []
-
-        # 뉴스 데이터를 수집
-        while (resultJSON is not None) and (resultJSON['display'] > 0):
-            NNC.setNewsSearchResult(resultAll, resultJSON)
-            start += resultJSON['display']
-            resultJSON = NNC.searchNaverNews(keyword, start, display)
-            if start > 99:
-                break
-            if resultJSON is not None:
-                print(f"{keyword} [{start}] : Search Request Success")
-            else:
-                print(f"{keyword} [{start}] : Error ~~~~")
-
-        st.session_state["filename"] = f"./data/{keyword}_naver_news.csv"
-        
-        # CSV 저장 체크박스가 선택되었는지 확인
-        if checkbox_CSV:
-            os.makedirs(os.path.dirname(st.session_state["filename"]), exist_ok=True)
-            NNC.saveSearchResult_CSV(resultAll, st.session_state["filename"])
-            st.success(f"CSV 파일이 저장되었습니다: {st.session_state['filename']}")
+        if not keyword.strip():
+            st.error("키워드가 입력되지 않았습니다. 검색어를 입력하세요")
         else:
-            st.warning("CSV 저장이 선택되지 않았습니다.")
+            st.write("keyword", keyword, "checkbox", checkbox_CSV)
+            start = 1
+            display = 10
+            resultJSON = NNC.searchNaverNews(keyword, start, display)
+            resultAll = []
 
-        # filename = f"./data/{keyword}_naver_news.csv"
-        # if checkbox_CSV:
-        #     input_filename = os.path.basename(filename)
-        #     NNC.saveSearchResult_CSV(resultAll, filename)
-        #     corpus_list = tm.load_corpus_from_csv("./data/" + input_filename, "description")
+            # 뉴스 데이터를 수집
+            while (resultJSON is not None) and (resultJSON['display'] > 0):
+                NNC.setNewsSearchResult(resultAll, resultJSON)
+                start += resultJSON['display']
+                resultJSON = NNC.searchNaverNews(keyword, start, display)
+                if start > 99:
+                    break
+                if resultJSON is not None:
+                    print(f"{keyword} [{start}] : Search Request Success")
+                else:
+                    print(f"{keyword} [{start}] : Error ~~~~")
+
+            st.session_state["filename"] = f"./data/{keyword}_naver_news.csv"
+            
+            # CSV 저장 체크박스가 선택되었는지 확인
+            if checkbox_CSV:
+                os.makedirs(os.path.dirname(st.session_state["filename"]), exist_ok=True)
+                NNC.saveSearchResult_CSV(resultAll, st.session_state["filename"])
+                st.success(f"CSV 파일이 저장되었습니다: {st.session_state['filename']}")
+            else:
+                st.warning("CSV 저장이 선택되지 않았습니다.")
+
+            # filename = f"./data/{keyword}_naver_news.csv"
+            # if checkbox_CSV:
+            #     input_filename = os.path.basename(filename)
+            #     NNC.saveSearchResult_CSV(resultAll, filename)
+            #     corpus_list = tm.load_corpus_from_csv("./data/" + input_filename, "description")
 
 st.write("**설정**")
 
