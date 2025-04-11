@@ -117,8 +117,4 @@ if submitted_settings and st.session_state["filename"] is not None:
         if checkbox_wordCloud:
             wordcloud = STV.visualize_wordcloud_st(counter, slider_wordNumC)
             st.pyplot(wordcloud)
-
-    # 기사 내용 요약 (Tab 3)
-    with tab3:
-        st.header("기사 내용 요약")
-        st.write("여기에 기사 요약 내용을 추가할 수 있습니다.")
+            
